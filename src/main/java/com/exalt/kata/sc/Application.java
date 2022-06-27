@@ -1,6 +1,9 @@
 package com.exalt.kata.sc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 import com.exalt.kata.sc.exception.MalformedInputException;
@@ -18,8 +21,16 @@ public class Application {
         }
         var delimiter = matcher.group(2);
         var numbers = matcher.group(3);
-        return Arrays.stream(numbers.split(delimiter == null ? "[,\\n]" : "\\" + delimiter))
+        List<Integer> negatives = new ArrayList<>();
+        var result = Arrays.stream(numbers.split(delimiter == null ? "[,\\n]" : "\\" + delimiter))
                 .mapToInt(Integer::parseInt)
+                .peek(value -> {
+                    if(value < 0) negatives.add(value);
+                })
                 .sum();
+        if(!negatives.isEmpty()){
+            throw new MalformedInputException("Negatives not allowed " + negatives);
+        }
+        return result;
     }
 }
