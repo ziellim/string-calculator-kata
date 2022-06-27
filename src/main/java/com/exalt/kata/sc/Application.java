@@ -7,14 +7,18 @@ import com.exalt.kata.sc.exception.MalformedInputException;
 
 public class Application {
 
-    static int add(String numbers) throws MalformedInputException {
-        var pattern = Pattern.compile("\\s+|(?:\\-?\\d+[,\\n])*\\-?\\d{1}");
-        var matcher = pattern.matcher(numbers);
+    static int add(String numbersString) throws MalformedInputException {
+        var pattern = Pattern.compile("(\\s+)|(?:\\/\\/([^\\-1-9])\\n)?((?:\\-?\\d+[\\D\\-])*\\-?\\d{1})");
+        var matcher = pattern.matcher(numbersString);
         if (!matcher.matches()) {
             throw new MalformedInputException("Malformed input numbers");
         }
-        return Arrays.stream(numbers.split("[,\\n]"))
-                .filter(s -> !s.isBlank())
+        if (matcher.group(1) != null) { // empty string
+            return 0;
+        }
+        var delimiter = matcher.group(2);
+        var numbers = matcher.group(3);
+        return Arrays.stream(numbers.split(delimiter == null ? "[,\\n]" : "\\" + delimiter))
                 .mapToInt(Integer::parseInt)
                 .sum();
     }

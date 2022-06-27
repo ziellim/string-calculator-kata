@@ -13,7 +13,7 @@ class ApplicationTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-                 '  ',          0
+                 '   ',         0
                  '1,2',         3
                  '3,-3',        0
                  '-1',          -1
@@ -28,6 +28,8 @@ class ApplicationTest {
     @Test
     void shouldAddNumberWithLines() throws MalformedInputException {
         assertThat(add("1,-2\n3,4")).isEqualTo(6);
+        assertThat(add("//.\n1.2")).isEqualTo(3);
+        assertThat(add("//\n\n1\n2")).isEqualTo(3); //  line delimiter
     }
 
     @ParameterizedTest
